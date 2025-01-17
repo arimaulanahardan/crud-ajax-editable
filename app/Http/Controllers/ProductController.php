@@ -31,7 +31,6 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -39,10 +38,11 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
         ]);
 
-        Product::create($request->only('name', 'description', 'price', 'quantity'));
+        // Simpan produk
+        $product = Product::create($request->only('name', 'description', 'price', 'quantity'));
 
-        return response()->json(['message' => 'Product created successfully.']);
-        
+        // Kembalikan respons JSON dengan data produk baru
+        return response()->json(['message' => 'Product created successfully.', 'product' => $product]);
     }
 
     /**
@@ -67,15 +67,18 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
+            'name' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'quantity' => 'nullable|integer|min:0',
         ]);
-
+        
+    
         $product->update($request->only('name', 'description', 'price', 'quantity'));
+    
+        return response()->json(['message' => 'Product updated successfully.', 'product' => $product]);
 
-        return response()->json(['message' => 'Product updated successfully.']);
+
     }
 
     /**
