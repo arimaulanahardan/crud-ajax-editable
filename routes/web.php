@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',  [ProductController::class, 'index'])->name('products.index');
+Route::post('/', [ProductController::class, 'store'])->name('products.store');
+Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 Auth::routes();
 
