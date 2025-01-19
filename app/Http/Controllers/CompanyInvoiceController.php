@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompanyInvoice;
+use App\Models\Invoice;
 use App\Http\Requests\StoreCompanyInvoiceRequest;
 use App\Http\Requests\UpdateCompanyInvoiceRequest;
 
@@ -26,7 +27,12 @@ class CompanyInvoiceController extends Controller
      */
     public function create()
     {
-        //
+        $companyInvoices = CompanyInvoice::all();
+
+        dd("company invoice", $companyInvoices);
+
+        // return response view with data
+        return response()->view('company-invoice.create', compact( 'companyInvoices'));
     }
 
     /**
@@ -66,6 +72,17 @@ class CompanyInvoiceController extends Controller
      */
     public function destroy(CompanyInvoice $companyInvoice)
     {
-        //
+        // destroy company invoice and the related invoices
+        $Invoices = Invoice::where('company_invoice_id', $companyInvoice->id)->get();
+        foreach ($Invoices as $invoice) {
+            $invoice->delete();
+        }
+
+        $companyInvoice->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Company invoice deleted successfully'
+        ]);
     }
 }
