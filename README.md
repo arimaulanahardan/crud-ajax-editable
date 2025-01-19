@@ -1,66 +1,276 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Company Invoice Management
 
-## About Laravel
+This is a Laravel-based application that allows users to create and manage company invoices and related data using AJAX and dynamic form handling. This README provides detailed instructions for setting up the project, the database schema, relationships, and other relevant information.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Before getting started, make sure you have the following installed:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [PHP](https://www.php.net/downloads.php) (preferably version 8.0+)
+- [Composer](https://getcomposer.org/download/)
+- [Node.js](https://nodejs.org/en/download/) (preferably version 14+)
+- [NPM](https://www.npmjs.com/get-npm)
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Follow these steps to set up the project:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone the Repository
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone <repository-url>
+cd <project-directory>
+```
 
-## Laravel Sponsors
+### 2. Install PHP Dependencies
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Run the following command to install PHP dependencies using Composer:
 
-### Premium Partners
+```bash
+composer install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 3. Install Node.js Dependencies
 
-## Contributing
+Run the following command to install JavaScript dependencies:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+npm install
+```
 
-## Code of Conduct
+### 4. Compile Assets
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Compile your assets using NPM:
 
-## Security Vulnerabilities
+```bash
+npm run dev
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+This command will compile and optimize the assets such as CSS and JavaScript files.
 
-## License
+### 5. Generate Application Key
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Generate the application key for Laravel:
+
+```bash
+php artisan key:generate
+```
+
+This will set the `APP_KEY` in your `.env` file, which is required for encryption and security.
+
+### 6. Run Migrations and Seed Data
+
+Run the migrations to create the required tables and seed the initial data (if any):
+
+```bash
+php artisan migrate --seed
+```
+
+This will set up the database schema and insert any initial data required for the app.
+
+### 7. Serve the Application
+
+Start the development server:
+
+```bash
+php artisan serve
+```
+
+By default, the application will be accessible at `http://127.0.0.1:8000`.
+
+## Database Schema
+
+This application uses a relational database with the following tables:
+
+1. **CompanyInvoices**: Stores details about company invoices.
+    - Columns:
+      - `id` (Primary Key)
+      - `invoice_number` (String)
+      - `company_name` (String)
+      - `delivery_date` (Date)
+      - `submit_date` (DateTime)
+      - `amount` (Decimal)
+
+2. **Invoices**: Stores individual invoices related to company invoices.
+    - Columns:
+      - `id` (Primary Key)
+      - `coil_number` (String)
+      - `width` (Integer)
+      - `length` (Integer)
+      - `thickness` (Integer)
+      - `weight` (Decimal)
+      - `price` (Decimal)
+      - `company_invoice_id` (Foreign Key referencing `company_invoices.id`)
+
+### Table Relationships
+
+1. **CompanyInvoice to Invoice**: One-to-many relationship. A company invoice can have multiple related invoices.
+   - In the `CompanyInvoice` model:
+     ```php
+     public function invoices()
+     {
+         return $this->hasMany(Invoice::class);
+     }
+     ```
+   - In the `Invoice` model:
+     ```php
+     public function companyInvoice()
+     {
+         return $this->belongsTo(CompanyInvoice::class);
+     }
+     ```
+
+## AJAX Implementation
+
+The application uses AJAX to dynamically add invoices and calculate the total amount in real-time. Here's a breakdown of how it works:
+
+1. **Adding Invoices Dynamically**: 
+    - When the "Add Invoice" button is clicked, new input fields for a coil number, width, length, thickness, weight, and price are added to the form dynamically.
+    - This is handled by the following jQuery code:
+    ```javascript
+    $('#addInvoice').on('click', function() {
+        $('#createInvoice').append(`
+            <div class="d-flex justify-content-between gap-4">
+                <!-- New input fields for each invoice -->
+            </div>
+        `);
+    });
+    ```
+
+2. **Total Amount Calculation**:
+    - The total amount is dynamically calculated by listening for input changes in the `price[]` fields.
+    - When the price of any invoice is changed, the `input[name="price[]"]` event triggers, and the total amount is updated:
+    ```javascript
+    $(document).on('input', 'input[name="price[]"]', function() {
+        let totalAmount = 0;
+        $('input[name="price[]"]').each(function() {
+            totalAmount += parseFloat($(this).val()) || 0; // Avoid NaN
+        });
+        $('#amount').text(totalAmount);
+    });
+    ```
+
+3. **Form Submission via AJAX**:
+    - When the user submits the form, an AJAX request is sent to the server to save the company invoice and related invoices.
+    - The data is collected using `FormData` and sent to the backend using the `POST` method.
+    - Example of AJAX request:
+    ```javascript
+    $.ajax({
+        url: "{{ route('company-invoices.store') }}",
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            // Handle success
+        },
+        error: function(xhr, status, error) {
+            // Handle errors
+        }
+    });
+    ```
+
+### Response Handling
+
+The response from the server contains the `status` and `message`, which are displayed to the user. If there are validation errors, they are displayed in a red error box.
+
+```javascript
+success: function(response) {
+    if (response.status == 201) {
+        // Display success message
+    }
+},
+error: function(xhr, status, error) {
+    let errors = xhr.responseJSON.errors;
+    let errorMessage = '';
+    $.each(errors, function(key, value) {
+        errorMessage += `<div class="alert alert-danger">${value}</div>`;
+    });
+    $('#response-message').html(errorMessage);
+}
+```
+
+## File Structure
+
+The file structure of this application is organized as follows:
+
+```
+.
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Middleware/
+│   ├── Models/
+├── resources/
+│   ├── views/
+│   │   ├── company_invoices/
+│   │   ├── layouts/
+│   │   └── errors/
+├── routes/
+│   ├── web.php
+├── database/
+│   ├── migrations/
+│   ├── seeders/
+├── public/
+│   ├── css/
+│   ├── js/
+├── storage/
+│   ├── logs/
+├── .env
+└── .gitignore
+```
+
+## Usage
+
+Once the app is running, users can:
+
+1. Add a new company invoice by filling in the company name, delivery date, and invoice details.
+2. Click the "Add Invoice" button to add additional invoice fields.
+3. Enter the price for each invoice, and the total amount will be calculated automatically.
+4. Submit the form via AJAX to store the company invoice and related invoice details in the database.
+5. In case of an error or success, an appropriate message is displayed.
+
+### Routes
+
+- **GET `/company-invoices/create`**: Displays the form for creating a new company invoice.
+- **POST `/company-invoices`**: Handles form submission and stores the data in the database.
+
+### Controllers
+
+- **CompanyInvoiceController**: Handles the business logic for creating and storing company invoices.
+  
+  Example of the `store` method:
+  ```php
+  public function store(Request $request)
+  {
+      $data = $request->validate([
+          'company_name' => 'required|string',
+          'delivery_date' => 'required|date',
+          'invoices' => 'required|array',
+          'invoices.*.coil_number' => 'required|string',
+          'invoices.*.price' => 'required|numeric',
+      ]);
+
+      $companyInvoice = CompanyInvoice::create([
+          'company_name' => $data['company_name'],
+          'delivery_date' => $data['delivery_date'],
+          'submit_date' => now(),
+      ]);
+
+      foreach ($data['invoices'] as $invoiceData) {
+          $companyInvoice->invoices()->create($invoiceData);
+      }
+
+      return response()->json([
+          'status' => 201,
+          'message' => 'Company invoice created successfully!',
+      ]);
+  }
+  ```
+
+## Conclusion
+
+This application allows users to manage company invoices and their related invoices seamlessly using AJAX for dynamic form handling. The server-side functionality uses Laravel to store invoices and ensure proper relationships between models. Make sure to follow the setup instructions and ensure that your environment meets the prerequisites before running the application.
+
+If you encounter any issues, feel free to check the Laravel logs or the browser console for detailed error messages.
