@@ -19,7 +19,7 @@ class InvoiceFactory extends Factory
         return [
             'coil_number' => $this->faker->word,
             'width' => $this->faker->randomFloat(2, 0, 9999),
-            'lenght' => $this->faker->randomFloat(2, 0, 9999),
+            'length' => $this->faker->randomFloat(2, 0, 9999),
             'thickness' => $this->faker->randomFloat(2, 0, 9999),
             'weight' => $this->faker->randomFloat(2, 0, 9999),
             'price' => $this->faker->randomFloat(2, 0, 9999),

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('company_invoice_id')->constrained();
             $table->string('coil_number');
             $table->decimal('width', 10, 2);
-            $table->decimal('lenght', 10, 2);
+            $table->decimal('length', 10, 2);
             $table->decimal('thickness', 10, 2);
             $table->decimal('weight', 10, 2);
             $table->decimal('price', 10, 2);

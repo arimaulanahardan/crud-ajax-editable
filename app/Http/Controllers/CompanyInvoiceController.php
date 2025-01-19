@@ -15,7 +15,6 @@ class CompanyInvoiceController extends Controller
     public function index()
     {
         $companyInvoices = CompanyInvoice::all();
-        // return json woth repose 200 status
         return response()->json([
             'status' => 200,
             'companyInvoices' => $companyInvoices
@@ -27,20 +26,54 @@ class CompanyInvoiceController extends Controller
      */
     public function create()
     {
-        $companyInvoices = CompanyInvoice::all();
-
-        dd("company invoice", $companyInvoices);
-
-        // return response view with data
-        return response()->view('company-invoice.create', compact( 'companyInvoices'));
+        return response()->view('company-invoice-create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCompanyInvoiceRequest $request)
+   public function store(StoreCompanyInvoiceRequest $request)
     {
-        //
+
+        $today = date('Ymd');
+        $invoiceId = CompanyInvoice::max('id') + 1;
+        $invoiceNumber = "INV-{$today}/" . str_pad($invoiceId, 2, '0', STR_PAD_LEFT);
+
+        $amount = 0;
+
+        $dataCompanyInvoice = [
+            'invoice_number' => $invoiceNumber,
+            'company_name' => $request->company_name,
+            'delivery_date' => $request->delivery_date,
+            'submit_date' => now(),
+            'amount' => $amount,
+        ];
+
+        $companyInvoice = CompanyInvoice::create($dataCompanyInvoice);
+
+        $invoicesData = [];
+        foreach ($request->invoices as $invoiceData) {
+            $invoicesData[] = [
+                'coil_number' => $invoiceData['coil_number'],
+                'width' => $invoiceData['width'],
+                'length' => $invoiceData['length'],
+                'thickness' => $invoiceData['thickness'],
+                'weight' => $invoiceData['weight'],
+                'price' => $invoiceData['price'],
+                'company_invoice_id' => $companyInvoice->id, 
+            ];
+
+            $amount += $invoiceData['price'];
+        }
+
+        Invoice::insert($invoicesData);
+
+        $companyInvoice->update(['amount' => $amount]);
+
+        $companyInvoice->load('invoices');
+
+        return response()->json([
+            'status' => 201,
+            'message' => 'Company invoice created successfully',
+            'companyInvoice' => $companyInvoice,
+        ]);
     }
 
     /**
@@ -48,7 +81,10 @@ class CompanyInvoiceController extends Controller
      */
     public function show(CompanyInvoice $companyInvoice)
     {
-        //
+        $companyInvoices = CompanyInvoice::find($companyInvoice->id);
+        $invoices = Invoice::where('company_invoice_id', $companyInvoice->id)->get();
+
+        return response()->view('company-invoice-show', compact('companyInvoices', 'invoices'));
     }
 
     /**
@@ -56,7 +92,10 @@ class CompanyInvoiceController extends Controller
      */
     public function edit(CompanyInvoice $companyInvoice)
     {
-        //
+        $companyInvoices = CompanyInvoice::find($companyInvoice->id);
+        $invoices = Invoice::where('company_invoice_id', $companyInvoice->id)->get();
+
+        return response()->view('company-invoice-edit', compact('companyInvoices', 'invoices'));      
     }
 
     /**
@@ -64,7 +103,11 @@ class CompanyInvoiceController extends Controller
      */
     public function update(UpdateCompanyInvoiceRequest $request, CompanyInvoice $companyInvoice)
     {
-        //
+        $dataCompanyInvoice = [
+            'company_name' => $request->company_name,
+            'delivery_date' => $request->delivery_date,
+        ];
+
     }
 
     /**
@@ -72,7 +115,6 @@ class CompanyInvoiceController extends Controller
      */
     public function destroy(CompanyInvoice $companyInvoice)
     {
-        // destroy company invoice and the related invoices
         $Invoices = Invoice::where('company_invoice_id', $companyInvoice->id)->get();
         foreach ($Invoices as $invoice) {
             $invoice->delete();

@@ -19,7 +19,7 @@ class CompanyInvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'invoice_number' => $this->faker->unique()->numerify('INV-#####'),
+            'invoice_number' => $this->faker->unique()->numerify('INV-########/##'),
             'company_name' => 'PT. ' . $this->faker->company,
             'delivery_date' => $this->faker->date(),
             'submit_date' => $this->faker->date(),

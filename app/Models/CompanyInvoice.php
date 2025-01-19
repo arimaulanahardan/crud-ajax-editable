@@ -21,4 +21,12 @@ class CompanyInvoice extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($companyInvoice) {
+            $latestInvoiceId = CompanyInvoice::max('id') ?? 0;  
+            $companyInvoice->id = $latestInvoiceId + 1; 
+        });
+    }
 }
